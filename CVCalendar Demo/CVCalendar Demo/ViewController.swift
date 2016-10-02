@@ -54,6 +54,7 @@ class ViewController: UIViewController {
         
         calendarView.commitCalendarViewUpdate()
         menuView.commitMenuViewUpdate()
+        calendarView.toggleCurrentDayView()
     }
 }
 
@@ -63,12 +64,12 @@ extension ViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate {
     
     /// Required method to implement!
     func presentationMode() -> CalendarMode {
-        return .monthView
+        return .weekView
     }
     
     /// Required method to implement!
     func firstWeekday() -> Weekday {
-        return .sunday
+        return .monday
     }
     
     // MARK: Optional methods
@@ -78,7 +79,7 @@ extension ViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate {
     }
     
     func shouldShowWeekdaysOut() -> Bool {
-        return shouldShowDaysOut
+        return true
     }
     
     func shouldAnimateResizing() -> Bool {
@@ -131,51 +132,10 @@ extension ViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate {
             self.view.insertSubview(updatedMonthLabel, aboveSubview: self.monthLabel)
         }
     }
-    
-    func topMarker(shouldDisplayOnDayView dayView: CVCalendarDayView) -> Bool {
-        return true
-    }
-    
-    func dotMarker(shouldShowOnDayView dayView: CVCalendarDayView) -> Bool {
-        let day = dayView.date.day
-        let randomDay = Int(arc4random_uniform(31))
-        if day == randomDay {
-            return true
-        }
-        
-        return false
-    }
-    
-    func dotMarker(colorOnDayView dayView: CVCalendarDayView) -> [UIColor] {
-        
-        let red = CGFloat(arc4random_uniform(600) / 255)
-        let green = CGFloat(arc4random_uniform(600) / 255)
-        let blue = CGFloat(arc4random_uniform(600) / 255)
-        
-        let color = UIColor(red: red, green: green, blue: blue, alpha: 1)
-
-        let numberOfDots = Int(arc4random_uniform(3) + 1)
-        switch(numberOfDots) {
-        case 2:
-            return [color, color]
-        case 3:
-            return [color, color, color]
-        default:
-            return [color] // return 1 dot
-        }
-    }
-    
-    func dotMarker(shouldMoveOnHighlightingOnDayView dayView: CVCalendarDayView) -> Bool {
-        return true
-    }
-
-    func dotMarker(sizeOnDayView dayView: DayView) -> CGFloat {
-        return 13
-    }
 
     
     func weekdaySymbolType() -> WeekdaySymbolType {
-        return .short
+        return .veryShort
     }
     
     func selectionViewPath() -> ((CGRect) -> (UIBezierPath)) {
@@ -314,12 +274,24 @@ extension ViewController {
     }
     
     @IBAction func loadPrevious(sender: AnyObject) {
-        calendarView.loadPreviousView()
+        if let date = calendarView.presentedDate.convertedDate() {
+            let calendar = Calendar.current
+            if let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: date)) {
+                calendarView.toggleViewWithDate(yesterday)
+            }
+        }
+//        calendarView.loadPreviousView()
     }
     
     
     @IBAction func loadNext(sender: AnyObject) {
-        calendarView.loadNextView()
+        if let date = calendarView.presentedDate.convertedDate() {
+            let calendar = Calendar.current
+            if let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date)) {
+                calendarView.toggleViewWithDate(tomorrow)
+            }
+        }
+//        calendarView.loadNextView()
     }
 }
 
@@ -342,9 +314,9 @@ extension ViewController {
     {
 //        let calendar = NSCalendar.currentCalendar()
 //        let calendarManager = calendarView.manager
-        let components = Manager.componentsForDate(date as Date) // from today
-        
-        print("Showing Month: \(components.month)")
+//        let components = Manager.componentsForDate(date as Date) // from today
+//        
+//        print("Showing Month: \(components.month)")
     }
     
     

@@ -54,6 +54,8 @@ public final class CVCalendarWeekContentViewController: CVCalendarContentViewCon
             insertWeekView(getPreviousWeek(presented), withIdentifier: previous)
             insertWeekView(getFollowingWeek(presented), withIdentifier: following)
         }
+
+        calendarView.presentedDate = CVDate(date: presentedMonthView.date)
     }
 
     public func reloadWeekViews() {
