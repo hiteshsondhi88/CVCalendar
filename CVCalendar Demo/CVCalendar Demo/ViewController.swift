@@ -90,8 +90,8 @@ extension ViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate {
         return arc4random_uniform(3) == 0 ? true : false
     }
     
-    func didSelectDayView(_ dayView: CVCalendarDayView, animationDidFinish: Bool) {
-        print("\(dayView.date.commonDescription) is selected!")
+    func didSelectDayView(_ dayView: CVCalendarDayView, animationDidFinish: Bool, fromTouch: Bool) {
+        print("\(dayView.date.commonDescription) is selected! from touch \(fromTouch)")
         selectedDay = dayView
     }
     
